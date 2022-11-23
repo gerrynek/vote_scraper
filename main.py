@@ -5,7 +5,7 @@ from pathlib import Path as P
 
 @click.command()
 @click.option("--url", "url", type=str, required=True, help="URL scrapované stránky")
-@click.option("--output", "out", type=str, required=False, help="Název výstupního souboru")
+@click.option("--output", "out", type=str, required=True, help="Název výstupního souboru")
 def app(url, out):
     r = requests.get(url, headers ={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
     data = pd.read_html(r.text)
