@@ -6,6 +6,8 @@ email: jaroslav.list@kiwi.com
 discord: Jara#4939
 ```
 
+Scraper for volby.cz that returns .csv file with results for the cities
+
 How to start the script:
 1) Install requirements:
 ```
@@ -18,7 +20,7 @@ python main.py --url 'https://www.volby.cz/pls/ps2017nss/ps32?xjazyk=CZ&xkraj=2&
 ```
 The output .csv file will be generated to /output folder 
 
---url URL of the site from volby.cz you want to scrap | required
+--url <URL of the site from volby.cz you want to scrape> | required
 
---output name of the output file | required
+--output <name of the output file> | required
 ```
