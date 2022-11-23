@@ -5,12 +5,10 @@ from pathlib import Path as P
 
 @click.command()
 @click.option("--url", "url", type=str, required=True, help="URL scrapované stránky")
-@click.option("--output", "out", type=str, required=True, help="Název výstupního souboru")
+@click.option("--output", "out", type=str, required=False, help="Název výstupního souboru")
 def app(url, out):
     r = requests.get(url, headers ={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
     data = pd.read_html(r.text)
-    #print(data)
-    #print(len(data)) # více tabulek potreba doimplementovat
     list_of_numbers = []
     list_of_cities = []
     list_of_parties = []
@@ -23,10 +21,14 @@ def app(url, out):
     list_of_cities = list_of_cities[:-2]
     list_of_numbers = list_of_numbers[:-2]
     #print(list_of_cities, list_of_numbers)
-    res = {list_of_numbers[i] : list_of_cities[i] for i in range(len(list_of_numbers))}
+    cities = {list_of_numbers[i] : list_of_cities[i] for i in range(len(list_of_numbers))}
     
 
-    url2_link = f'https://www.volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj=12&xobec={list_of_numbers[0]}&xvyber=7103'
+    kraj_no_f = url.split('kraj=')
+    kraj_no = kraj_no_f[1].split('&xnu')[0]
+    okrsek_no = url.split('&xnumnuts=')[1]
+
+    url2_link = f'https://www.volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj={kraj_no}&xobec={list_of_numbers[0]}&xvyber={okrsek_no}'
     r = requests.get(url2_link,headers ={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
     data = pd.read_html(r.text, header=None)
     for iterace in range(1, len(data)):
@@ -34,17 +36,16 @@ def app(url, out):
             list_of_parties.append(nazev)
     list_of_parties = list_of_parties[:-1]
 
-    for kod_obce in res:
-        nazev = res[kod_obce]
-        url2_link = f'https://www.volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj=12&xobec={kod_obce}&xvyber=7103'
+    for kod_obce in cities:
+        nazev = cities[kod_obce]
+        url2_link = f'https://www.volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj={kraj_no}&xobec={kod_obce}&xvyber={okrsek_no}'
         r = requests.get(url2_link,headers ={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
         data = pd.read_html(r.text, header=None)
         volici = str(data[0]['Voliči v seznamu'].values[0][0])
         obalky = str(data[0]['Vydané obálky'].values[0][0])
         odevzdane = str(data[0]['Odevzdané obálky'].values[0][0])
         platne = str(data[0]['Platné hlasy'].values[0][0])
-        procento = round(float(data[0]['% platných hlasů'].values[0]/100), 2)
-        #print(nazev, kod_obce,"|", volici, obalky, odevzdane, platne, procento)
+        #print(nazev, kod_obce,"|", volici, obalky, odevzdane, platne)
         for data_sub in range (1, len(data)):
             for hlasy in data[data_sub]['Platné hlasy']['celkem']:
                 #print(hlasy)
@@ -71,16 +72,16 @@ def app(url, out):
                             #TO DO
                             #PRIRADIT K JEDNOTLIVYM STRANAM JEJICH HLASY TED JE TO BLBE
 
-    for li in list_of_lists_of_votes: 
-        parties = {list_of_parties[i] : list_of_lists_of_votes[i][li] for i in range(len(list_of_parties))}
+    #for li in list_of_lists_of_votes: 
+        #parties = {list_of_parties[i] : list_of_lists_of_votes[i][li] for i in range(len(list_of_parties))}
 
-    print(parties)
+    #print(parties)
 
-    data_for_output.update(parties)
+    #data_for_output.update(parties)
     print(len(list_of_cities), len(list_of_lists_of_votes), len(list_of_numbers), len(list_of_parties))
     #print(pd.DataFrame(data_for_output))
 
-    #filepath = P(f'output/{out}')
+    #filepath = P(f'output/{out}.csv')
     #filepath.parent.mkdir(parents=True, exist_ok=True)
     #pd.DataFrame(data_for_output).to_csv(filepath, index=False, header=True)
 
