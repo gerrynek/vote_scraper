@@ -43,8 +43,8 @@ def app(url, out):
 
     for kod_obce in cities:
         nazev = cities[kod_obce]
-        url2_link = f'https://www.volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj={kraj_no}&xobec={kod_obce}&xvyber={okrsek_no}'
-        r = requests.get(url2_link,headers ={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
+        url3_link = f'https://www.volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj={kraj_no}&xobec={kod_obce}&xvyber={okrsek_no}'
+        r = requests.get(url3_link,headers ={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
         data = pd.read_html(r.text, header=None)
         registered = str(data[0]['Voliči v seznamu'].values[0][0])
         list_of_registered.append((str(registered).encode("ascii", "ignore")).decode()) #odstraneni prasarnicek v datech
