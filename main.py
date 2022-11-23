@@ -20,7 +20,6 @@ def app(url, out):
             list_of_cities.append(i)
     list_of_cities = list_of_cities[:-2]
     list_of_numbers = list_of_numbers[:-2]
-    #print(list_of_cities, list_of_numbers)
     cities = {list_of_numbers[i] : list_of_cities[i] for i in range(len(list_of_numbers))}
     
 
@@ -45,22 +44,17 @@ def app(url, out):
         obalky = str(data[0]['Vydané obálky'].values[0][0])
         odevzdane = str(data[0]['Odevzdané obálky'].values[0][0])
         platne = str(data[0]['Platné hlasy'].values[0][0])
-        #print(nazev, kod_obce,"|", volici, obalky, odevzdane, platne)
         for data_sub in range (1, len(data)):
             for hlasy in data[data_sub]['Platné hlasy']['celkem']:
-                #print(hlasy)
                 list_of_votes.append(hlasy)
     a = 0
     b = 25
     list_of_lists_of_votes = []
     for i in range(0, len(list_of_cities)):
-        #print(len(list_of_votes[a:b]))
-        #print(list_of_votes[a:b])
         list_of_lists_of_votes.append(list_of_votes[a:b])
         a+=26
         b+=26
-    #print(list_of_lists_of_votes)
-    
+
     
     data_for_output = {
         "code":list_of_numbers,
