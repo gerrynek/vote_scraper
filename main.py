@@ -13,6 +13,10 @@ def app(url, out):
     list_of_cities = []
     list_of_parties = []
     list_of_votes = []
+    list_of_registered = []
+    list_of_valid_votes = []
+    list_of_envelopes = []
+
     for tabulka in range (0, len(data)):
         for i in data[tabulka]['Obec']['číslo']:
             list_of_numbers.append(i)
@@ -40,13 +44,17 @@ def app(url, out):
         url2_link = f'https://www.volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj={kraj_no}&xobec={kod_obce}&xvyber={okrsek_no}'
         r = requests.get(url2_link,headers ={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'})
         data = pd.read_html(r.text, header=None)
-        volici = str(data[0]['Voliči v seznamu'].values[0][0])
-        obalky = str(data[0]['Vydané obálky'].values[0][0])
-        odevzdane = str(data[0]['Odevzdané obálky'].values[0][0])
-        platne = str(data[0]['Platné hlasy'].values[0][0])
+        registered = str(data[0]['Voliči v seznamu'].values[0][0])
+        list_of_registered.append(registered)
+        envelopes = str(data[0]['Vydané obálky'].values[0][0])
+        list_of_envelopes.append(envelopes)
+        valid = str(data[0]['Platné hlasy'].values[0][0])
+        list_of_valid_votes.append(valid)
+        
         for data_sub in range (1, len(data)):
             for hlasy in data[data_sub]['Platné hlasy']['celkem']:
                 list_of_votes.append(hlasy)
+
     a = 0
     b = 25
     list_of_lists_of_votes = []
@@ -59,21 +67,22 @@ def app(url, out):
     data_for_output = {
         "code":list_of_numbers,
         "location":list_of_cities,
-        "registered":volici,
-        "envelopes":obalky,
-        "valid":platne,
+        "registered":list_of_registered,
+        "envelopes":list_of_envelopes,
+        "valid":list_of_valid_votes,
     }
                             #TO DO
                             #PRIRADIT K JEDNOTLIVYM STRANAM JEJICH HLASY TED JE TO BLBE
 
     #for li in list_of_lists_of_votes: 
-        #parties = {list_of_parties[i] : list_of_lists_of_votes[i][li] for i in range(len(list_of_parties))}
+    #    parties = {list_of_parties[i] : list_of_lists_of_votes[i][li] for i in range(len(list_of_parties))}
 
-    #print(parties)
+    print(list_of_parties)
+    print(list_of_lists_of_votes)
 
     #data_for_output.update(parties)
     print(len(list_of_cities), len(list_of_lists_of_votes), len(list_of_numbers), len(list_of_parties))
-    #print(pd.DataFrame(data_for_output))
+    print(pd.DataFrame(data_for_output))
 
     #filepath = P(f'output/{out}.csv')
     #filepath.parent.mkdir(parents=True, exist_ok=True)
