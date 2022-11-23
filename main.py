@@ -17,7 +17,6 @@ def app(url, out):
     list_of_registered = []
     list_of_valid_votes = []
 
-
 #POKUD JE PRAZDNY RADEK V SENAMU OBCI TAK HO IGNOROVAT TO DO EDGE CASE
     for tabulka in range (0, len(data)):
         for i in data[tabulka]['Obec']['číslo']:
@@ -58,38 +57,25 @@ def app(url, out):
     b = len(list_of_parties)
     list_of_lists_of_votes = []
     for i in range(0, len(list_of_cities)):
-        #import code; code.interact(local=locals())
-        #print(list_of_votes[a:b], len(list_of_votes[a:b]), "\n")
-        
+
         if list_of_votes[a:b]:
             list_of_lists_of_votes.append(list_of_votes[a:b])
         a += len(list_of_parties)
         b += len(list_of_parties)
-    
 
-                    #TO DO
-                    #PRIRADIT K JEDNOTLIVYM STRANAM JEJICH HLASY TED JE TO BLBE
     new_list=[]
     for i in range(0, len(list_of_parties)):
         for y in list_of_lists_of_votes:
             new_list.append(y[i])
-    #print(len(new_list))
 
     a = 0
     b = len(list_of_cities)
     list_of_lists_of_votes_sorted = []
     for i in range(0, len(list_of_parties)):
         list_of_lists_of_votes_sorted.append(new_list[a:b])
-        #print(new_list[a:b], len(new_list[a:b]))
         b += len(list_of_cities)
         a += len(list_of_cities)
 
-    #print(len(list_of_lists_of_votes_sorted))
-    #print(list_of_cities)
-    #print(len(list_of_city_numbers))
-    #print(len(list_of_votes))
-    #print(len(list_of_parties))
-#––––––––––––––––––––––––––––––––––––––––––
 #OUTPUT data
     data_for_output = {
         "code":list_of_city_numbers,
@@ -100,10 +86,8 @@ def app(url, out):
     }
 
     parties = {list_of_parties[i] : list_of_lists_of_votes_sorted[i] for i in range(0, len(list_of_parties))}
-    
     data_for_output.update(parties)
-    for i in data_for_output.values():
-        print(len(i))
+
     print(pd.DataFrame(data_for_output))
     filepath = P(f'output/{out}.csv')
     filepath.parent.mkdir(parents=True, exist_ok=True)
