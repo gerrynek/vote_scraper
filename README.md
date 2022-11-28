@@ -24,3 +24,5 @@ The output .csv file will be generated to /output folder
 
 --output <name of the output file> | required
 ```
+
+P.S.: It works but I know it is kinda shitty code, but I don't have much time to improve it. I hope I will get to it before you :D 
